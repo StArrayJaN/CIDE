@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CIDE</string>
+    <string name="console_content_description">console</string>
+    <string name="console_title">Console</string>
+    <string name="missing_android_ndk_text">The Android NDK is missing, so it needs to be download</string>
+    <string name="download_android_ndk">Yes</string>
+    <string name="import_android_ndk">Import Android NDK from local</string>
+    <string name="import_android_ndk_hint">Please enter the path of Android NDK tar.gz compressed package</string>
+    <string name="request_permission">Request storage permission</string>
+    <string name="permission_granted">Permission granted</string>
+    <string name="cide">Launch CIDE</string>
+    <string name="navigation_drawer_open">navigation_drawer_open</string>
+    <string name="navigation_drawer_close">navigation_drawer_close</string>
+</resources>

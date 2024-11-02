@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CIDE</string>
+    <string name="console_content_description">console</string>
+    <string name="console_title">控制台</string>
+    <string name="missing_android_ndk_text">缺失Android NDK，需要下载</string>
+    <string name="download_android_ndk">确定</string>
+    <string name="import_android_ndk">从本地导入NDK</string>
+    <string name="import_android_ndk_hint">请输入Android NDK tar.gz压缩包路径</string>
+    <string name="request_permission">申请内部存储权限</string>
+    <string name="permission_granted">已授权</string>
+    <string name="cide">启动CIDE</string>
+    <string name="navigation_drawer_open">navigation_drawer_open</string>
+    <string name="navigation_drawer_close">navigation_drawer_close</string>
+</resources>

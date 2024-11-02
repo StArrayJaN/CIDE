@@ -1,0 +1,66 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'starray.android.cide'
+    compileSdk 34
+    buildToolsVersion "33.0.0"
+    defaultConfig {
+        applicationId "starray.android.cide"
+        minSdk 26
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 28
+        versionCode 2
+        versionName "1.0"
+    }
+    signingConfigs {
+        release {
+            storeFile file('thercn.jks')
+            storePassword 'thercn'
+            keyAlias 'thercn'
+            keyPassword 'thercn'
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    lint {
+        checkReleaseBuilds = false
+    }
+}
+
+dependencies {
+    implementation(platform("io.github.Rosemoe.sora-editor:bom:0.23.4"))
+    implementation("com.liulishuo.filedownloader:library:+")
+    implementation 'io.github.Rosemoe.sora-editor:editor'
+    implementation project(":editor-lsp")
+    //implementation 'io.github.Rosemoe.sora-editor:editor-lsp'
+    implementation 'io.github.Rosemoe.sora-editor:language-java'
+    implementation 'org.antlr:antlr4-runtime:+'
+    implementation 'com.google.guava:guava:+'
+    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.23.1")
+    implementation("com.google.android.material:material:+")
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+}

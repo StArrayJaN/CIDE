@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:orientation="vertical"
+    android:background="?android:attr/colorBackground"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/console_title" />
+
+    <starray.android.cide.ICodeEditor
+        android:id="@+id/console"
+        android:elevation="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/console_content_description"
+        app:layout_behavior="@string/bottom_sheet_behavior"/>
+
+</LinearLayout>

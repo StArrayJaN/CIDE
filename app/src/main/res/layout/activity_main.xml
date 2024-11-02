@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="0"
+    tools:openDrawer="start"
+    android:orientation="vertical">
+<include layout="@layout/toolbar_layout"/>
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:openDrawer="left"
+        android:id="@+id/drawer_layout">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="left"
+            android:layout_height="match_parent">
+        </LinearLayout>
+        <starray.android.cide.IDECodeEditor
+        android:id="@+id/code_editor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    </androidx.drawerlayout.widget.DrawerLayout>
+</LinearLayout>
+    <include layout="@layout/bottom_window"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
