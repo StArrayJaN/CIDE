@@ -1,7 +1,8 @@
 # CIDE by TherCN(StArray)
 build:  
-./gradlew assembleDebug
+
 ```
+./gradlew assembleDebug
 ```
 Develop Progress:>====================
 
