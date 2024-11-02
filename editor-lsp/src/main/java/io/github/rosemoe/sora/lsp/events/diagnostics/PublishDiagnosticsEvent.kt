@@ -24,11 +24,13 @@
 
 package io.github.rosemoe.sora.lsp.events.diagnostics
 
+import android.util.Log
 import io.github.rosemoe.sora.lang.diagnostic.DiagnosticsContainer
 import io.github.rosemoe.sora.lsp.editor.LspEditor
 import io.github.rosemoe.sora.lsp.events.EventContext
 import io.github.rosemoe.sora.lsp.events.EventListener
 import io.github.rosemoe.sora.lsp.events.EventType
+import io.github.rosemoe.sora.lsp.utils.OtherUtils
 import io.github.rosemoe.sora.lsp.utils.transformToEditorDiagnostics
 import org.eclipse.lsp4j.Diagnostic
 
@@ -40,6 +42,9 @@ class PublishDiagnosticsEvent : EventListener {
 
         val lspEditor = context.get<LspEditor>("lsp-editor")
         val originEditor = lspEditor.editor ?: return
+        for (key in context.data.keys) {
+            Log.d("data", "key: $key, value: ${context.data[key]}")
+        }
         val data = context.get<List<Diagnostic>>("arg0")
 
         val diagnosticsContainer =
@@ -48,7 +53,7 @@ class PublishDiagnosticsEvent : EventListener {
         diagnosticsContainer.reset()
 
         diagnosticsContainer.addDiagnostics(
-            data.transformToEditorDiagnostics(originEditor)
+            OtherUtils.transformToEditorDiagnostics(data,originEditor)
         )
 
         originEditor.diagnostics = diagnosticsContainer

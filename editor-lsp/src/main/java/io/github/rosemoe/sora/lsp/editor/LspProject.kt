@@ -80,6 +80,13 @@ class LspProject(
     }
 
     fun getServerDefinition(ext: String): LanguageServerDefinition? {
+        for (serverDefinitionKey in serverDefinitions.keys) {
+            val exts : List<String>? = serverDefinitions[serverDefinitionKey]?.ext?.split(",")
+            for (extend in exts!!) {
+                Log.i("ServerDefinition", "ext: $extend")
+                if (extend == ext) return serverDefinitions[serverDefinitionKey]
+            }
+        }
         return serverDefinitions[ext]
     }
 
@@ -118,11 +125,17 @@ class LspProject(
     }
 
     internal fun getOrCreateLanguageServerWrapper(ext: String): LanguageServerWrapper {
+        for (languageServerWrappersKeys in languageServerWrappers.keys) {
+            val exts : List<String>? = languageServerWrappers[languageServerWrappersKeys]?.serverDefinition?.ext?.split(",")
+            for (extend in exts!!) {
+                if (extend == ext) return languageServerWrappers[languageServerWrappersKeys]?: createLanguageServerWrapper(ext)
+            }
+        }
         return languageServerWrappers[ext] ?: createLanguageServerWrapper(ext)
     }
 
     internal fun createLanguageServerWrapper(ext: String): LanguageServerWrapper {
-        val definition = serverDefinitions[ext]
+        val definition = getServerDefinition(ext)
             ?: throw IllegalArgumentException("No server definition for extension $ext")
         val wrapper = LanguageServerWrapper(definition, this)
         languageServerWrappers[ext] = wrapper

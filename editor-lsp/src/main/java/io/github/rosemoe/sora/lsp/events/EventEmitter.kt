@@ -150,7 +150,7 @@ abstract class AsyncEventListener : EventListener {
 }
 
 class EventContext {
-    private val data = HashMap<String, Any>()
+    public val data = HashMap<String, Any>()
 
     fun <T : Any> get(key: String): T {
         return data[key] as T

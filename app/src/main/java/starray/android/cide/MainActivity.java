@@ -38,6 +38,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+import io.github.rosemoe.sora.event.ClickEvent;
+import io.github.rosemoe.sora.event.EventReceiver;
+import io.github.rosemoe.sora.event.Unsubscribe;
 import io.github.rosemoe.sora.langs.java.JavaLanguage;
 import io.github.rosemoe.sora.lsp.client.connection.SocketStreamConnectionProvider;
 import io.github.rosemoe.sora.lsp.client.languageserver.serverdefinition.CustomLanguageServerDefinition;
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     ICodeEditor console;
     String clangdBinary;
     DrawerLayout drawerLayout;
+    TextView consoleTitle;
+    String projectPath;
+    String sourcePath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }}).start();
+            projectPath = getSharedPreferences("cide",MODE_PRIVATE).getString("projectPath","");
+            sourcePath = projectPath + getSharedPreferences("cide",MODE_PRIVATE).getString("sourcePath","");
             initLayout();
             APPUtils.setMainActivity(this);
             clangdBinary = getDataDir() + "/ndk/android-ndk-r24/toolchains/llvm/prebuilt/linux-aarch64/bin/clangd";
@@ -169,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(() -> console.commitText(sequence));
     }
     private AsyncProcess getProcess() {
-        AsyncProcess p = new AsyncProcess(getDataDir().toString() + "/ndk/android-ndk-r24/ndk-build","-C","/sdcard/MT2/jni","compile_commands.json");
+        AsyncProcess p = new AsyncProcess(getDataDir().toString() + "/ndk/android-ndk-r24/ndk-build","-C",projectPath,"compile_commands.json");
         p.redirectErrorStream(true);
         p.setProcessCallbak(new AsyncProcess.ProcessCallbak() {
             @Override
@@ -226,10 +234,14 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        consoleTitle = findViewById(R.id.tv_console_title);
         editor = findViewById(R.id.code_editor);
-        editor.setFile(new File(Environment.getExternalStorageDirectory() + "/MT2/jni/Source/EGL.cpp"));
+        editor.setFile(new File(sourcePath));
         editor.setEditable(false);
-        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(findViewById(R.id.ll_bottom_sheet));
+        editor.subscribeEvent(ClickEvent.class, (event, unsubscribe) -> {
+            consoleTitle.setText(event.getCharPosition().toString());
+        });
+        BottomSheetBehavior < View > behavior = BottomSheetBehavior.from(findViewById(R.id.ll_bottom_sheet));
         behavior.setPeekHeight(APPUtils.dip2px(this,50));
         console = findViewById(R.id.console);
         console.setEditable(false);
@@ -240,21 +252,20 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            LanguageServerDefinition sd = new CustomLanguageServerDefinition("cpp", ext -> new SocketStreamConnectionProvider(2345,"127.0.0.1")) {
+            LanguageServerDefinition sd = new CustomLanguageServerDefinition("cpp,c", ext -> new SocketStreamConnectionProvider(2345,"127.0.0.1")) {
                 @Override
                 public EventHandler.EventListener getEventListener() {
                     return listener;
                 }
             };
-            final LspProject project = new LspProject(Environment.getExternalStorageDirectory()+"/MT2");
+            final LspProject project = new LspProject(projectPath);
             project.addServerDefinition(sd);
             final Object lock = new Object();
             runOnUiThread(() -> {
                 try {
-                    lspEditor = project.createEditor(Environment.getExternalStorageDirectory() +"/MT2/jni/Source/EGL.cpp");
+                    lspEditor = project.createEditor(sourcePath);
                     lspEditor.setWrapperLanguage(new JavaLanguage());
                     lspEditor.setEditor(editor);
-
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -273,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                 lspEditor.connectWithTimeoutBlocking();
                 var changeWorkspaceFoldersParams = new DidChangeWorkspaceFoldersParams();
                 changeWorkspaceFoldersParams.setEvent(new WorkspaceFoldersChangeEvent());
-                changeWorkspaceFoldersParams.getEvent().setAdded(List.of(new WorkspaceFolder("file://" +Environment.getExternalStorageDirectory() + "/MT2", "myProject")));
+                changeWorkspaceFoldersParams.getEvent().setAdded(List.of(new WorkspaceFolder("file://" + projectPath, "myProject")));
                 Objects.requireNonNull(lspEditor.getRequestManager())
                         .didChangeWorkspaceFolders(
                                 changeWorkspaceFoldersParams

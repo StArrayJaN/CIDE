@@ -3,6 +3,7 @@ package starray.android.cide;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -40,11 +41,14 @@ public class SetupActivity extends AppCompatActivity {
     private TextView importNDKprogress;
     private Toolbar toolbar;
     private Button launchIDEButton;
+    private TextInputEditText projectPath;
+    private TextInputEditText sourcePath;
+    private TextInputEditText compileDBPath;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ndkDIr = new File(getDataDir(),"ndk");
-        if (ndkDIr.exists()) {
+        if (getSharedPreferences("cide",MODE_PRIVATE).getBoolean("inited",false)) {
             startActivity(new Intent(SetupActivity.this,MainActivity.class));
             finish();
         }
@@ -64,6 +68,12 @@ public class SetupActivity extends AppCompatActivity {
         NDKStatus = findViewById(R.id.ndk_status);
         importNDKprogress = findViewById(R.id.import_ndk_progress);
         launchIDEButton = findViewById(R.id.launch_ide);
+        projectPath = findViewById(R.id.project_path);
+        sourcePath = findViewById(R.id.source_path);
+        compileDBPath = findViewById(R.id.compile_db_path);
+
+        projectPath.setTag("项目路径");
+        sourcePath.setTag("源码路径");
         if (Permission.isPermissionGranted(this)) {
             requestPermissionButton.setEnabled(false);
             requestPermissionButton.setText("Permission Granted");
@@ -95,11 +105,35 @@ public class SetupActivity extends AppCompatActivity {
         launchIDEButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SetupActivity.this,MainActivity.class));
+                if (verifyPath(projectPath,false) && verifyPath(sourcePath,true)) {
+                    SharedPreferences.Editor editor = getSharedPreferences("cide",MODE_PRIVATE).edit();
+                    editor.putString("projectPath",projectPath.getText().toString());
+                    editor.putString("sourcePath",sourcePath.getText().toString());
+                    editor.putString("compileDBPath",compileDBPath.getText().toString());
+                    editor.putBoolean("inited",true);
+                    editor.apply();
+                    startActivity(new Intent(SetupActivity.this,MainActivity.class));
+                }
             }
         });
     }
 
+    private boolean verifyPath(TextInputEditText input,boolean isSourcePath){
+        if (TextUtils.isEmpty(input.getText())) {
+            APPUtils.print(input.getTag()+"不能为空!");
+            return false;
+        }
+        if (isSourcePath) {
+            if (!new File(projectPath.getText().toString(), input.getText().toString()).exists()) {
+                APPUtils.print(input.getTag() + ":" + projectPath.getText().toString() + input.getText().toString() + ":无效!");
+                return false;
+            }
+        } else if (!new File(input.getText().toString()).exists()) {
+            APPUtils.print(input.getTag() + ":" + input.getText().toString() + ":无效!");
+            return false;
+        }
+        return true;
+    }
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {

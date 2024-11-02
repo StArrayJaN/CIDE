@@ -143,7 +143,11 @@ fun LspEditor.createDidSaveTextDocumentParams(): DidSaveTextDocumentParams {
 }
 
 fun Position.getIndex(editor: CodeEditor): Int {
-    return editor.text.getCharIndex(this.line, this.character)
+    return try {
+        editor.text.getCharIndex(this.line, this.character)
+    } catch (e: StringIndexOutOfBoundsException) {
+        editor.text.getCharIndex(this.line, editor.text.getColumnCount(this.line))
+    }
 }
 
 fun List<Diagnostic>.transformToEditorDiagnostics(editor: CodeEditor): List<DiagnosticRegion> {

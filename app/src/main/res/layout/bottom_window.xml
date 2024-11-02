@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
+        android:id="@+id/tv_console_title"
         android:text="@string/console_title" />
 
     <starray.android.cide.ICodeEditor

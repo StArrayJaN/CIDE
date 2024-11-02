@@ -69,6 +69,42 @@
             android:text="@string/request_permission"
             />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/project_path_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/project_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入项目路径" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/source_path_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/source_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入源文件路径(路径会和项目路径拼接)" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/compile_db_path_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/compile_db_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入compile_commands.json路径(可以为空)" />
+        </com.google.android.material.textfield.TextInputLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
